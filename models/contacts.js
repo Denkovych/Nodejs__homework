@@ -1,53 +1,48 @@
-const fs = require('fs/promises')
-const path = require("path");
+const { Schema, model } = require("mongoose");
+const Joi = require("joi");
+const handleSchemaValidationErrors = require("../helpers/handleSchemaValidationErrors");
 
-const contactsData = path.join(__dirname, "contacts.json");
-
-const listContacts = async () => {
-  const contacts = await fs.readFile(contactsData);
-  return JSON.parse(contacts);
-}
-
-const getContactById = async (contactId) => {
-  const contacts = await fs.readFile(contactsData);
-  const [contact] = JSON.parse(contacts).filter((el) => el.id === contactId);
-  return contact;
-}
-
-const removeContact = async (contactId) => {
-  const contacts = await fs.readFile(contactsData);
-  const filteredContacts = JSON.parse(contacts).filter(
-    (el) => el.id !== contactId );
-  if (filteredContacts.length !== contacts.length) {
-    fs.writeFile(contactsData, JSON.stringify(filteredContacts), "utf-8");
-    return filteredContacts;
-  }
-}
-
-const addContact = async (body) => {
-  const contacts = await fs.readFile(contactsData);
-  const newContacts = [...JSON.parse(contacts), body];
-  fs.writeFile(contactsData, JSON.stringify(newContacts), "utf-8");
-  return body;
-}
-
-const updateContact = async (contactId, body) => {
-  const contacts = await fs.readFile(contactsData);
-  const uptatedContact = { id: contactId, ...body };
-  const newContacts = JSON.parse(contacts).reduce((acc, contact) => {
-    if (contact.id === contactId) {
-      return [...acc, uptatedContact];
+const contactSchema = new Schema(
+  {
+    name: {
+      type: String,
+      required: [true, "Set name for contact"],
+    },
+    email: {
+      type: String,
+    },
+    phone: {
+      type: String,
+      required: [true, "Set phone for contact"],
+    },
+    favorite: {
+      type: Boolean,
+      default: false,
     }
-    return [...acc, contact];
-  }, []);
-  fs.writeFile(contactsData, JSON.stringify(newContacts), "utf-8");
-  return uptatedContact;
-}
+  }
+);
 
+contactSchema.post("save", handleSchemaValidationErrors);
+
+const addSchema = Joi.object({
+  name: Joi.string().min(1).required(),
+  email: Joi.string().required(),
+  phone: Joi.string().required(),
+  favorite: Joi.bool,
+});
+
+const updateFavoriteSchema = Joi.object({
+  favorite: Joi.bool().required(),
+});
+
+const Contact = model("contact", contactSchema);
+
+const schemas = {
+  addSchema,
+  Contact,
+  updateFavoriteSchema,
+};
 module.exports = {
-  listContacts,
-  getContactById,
-  removeContact,
-  addContact,
-  updateContact,
-}
+  Contact,
+  schemas,
+};

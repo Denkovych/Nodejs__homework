@@ -1,123 +1,35 @@
-const express = require('express')
-const createError = require("http-errors")
-const Joi = require("joi");
+const express = require("express");
 
-
-const router = express.Router()
-
-const contactSchema = Joi.object({
-  name: Joi.string().min(1).alphanum().required(),
-  email: Joi.string().required(),
-  phone: Joi.number().integer().required(),
-});
-
+const {validation } = require("../../middlewares");
+const { schemas } = require("../../models/contacts");
 const {
-  listContacts,
-  getContactById,
-  removeContact,
-  addContact,
-  updateContact
-} = require('../../models/contacts')
+  getAll,
+  getById,
+  add,
+  remove,
+  update,
+  updateStatusContact
+} = require("../../controllers");
 
-router.get('/', async (req, res, next) => {
-  try {
-    const contacts = await listContacts();
-    res.json({
-      status: "success",
-      code: 200,
-      data: {
-        result: contacts,
-      }
-    })
-  }catch (error) {
-    next(error);
-  }
-  
-})
+const validationMiddleware = validation(schemas.addSchema);
+const validationMiddlewareFavorite = validation(schemas.updateFavoriteSchema);
 
-router.get('/:contactId', async (req, res, next) => {
-  try {
-    const { contactId } = req.params;
-    const contact = await getContactById(contactId);
-    if (!contact) {
-      throw createError(404, `Contact with contactId ${contactId} not found`);
-    }
-    res.json({
-      status: "success",
-      code: 200,
-      data: {
-        result: contact,
-      },
-    });
-  } catch (error) {
-    next(error);
-  }
-})
+const router = express.Router();
 
-router.post('/', async (req, res, next) => {
-   try {
-    const { error } = contactSchema.validate(req.body);
-    if (error) {
-      error.status = 400;
-      throw error;
-    }
-    const result = await addContact(req.body);
-    res.status(201).json({
-      status: "success",
-      code: 201,
-      data: {
-        result,
-      },
-    });
-  } catch (error) {
-    next(error);
-  }
-})
+router.get("/", getAll);
 
-router.delete('/:contactId', async (req, res, next) => {
-   try {
-    const { contactId } = req.params;
-    const result = await removeContact(contactId, req.body);
+router.get("/:contactId", getById);
 
-    if (!result) {
-      throw createError(404, `Contact with contactId ${contactId} not found`);
-    }
+router.post("/", validationMiddleware,add);
 
-    res.json({
-      status: "success",
-      code: 200,
-      message: "contact deleted",
-      data: {
-        result,
-      },
-    });
-  } catch (error) {
-    next(error);
-  }
-})
+router.delete("/:contactId", remove);
 
-router.put('/:contactId', async (req, res, next) => {
-  try {
-    const { error } = contactSchema.validate(req.body);
-    if (error) {
-      error.status = 400;
-      throw error;
-    }
-    const { contactId } = req.params
-    const result = await updateContact(contactId, req.body)
-  if (!result) {
-      throw createError(404, `Contact with contactId ${contactId} not found`);
-    }
-    res.json({
-      status: "success",
-      code: 200,
-      data: {
-        result,
-      },
-    });
-  } catch (error) {
-    next(error);
-  }
-})
+router.put("/:contactId", validationMiddleware, update);
 
-module.exports = router
+router.patch(
+  "/:contactId/favorite",
+  validationMiddlewareFavorite,
+  updateStatusContact
+);
+
+module.exports = router;
