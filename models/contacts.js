@@ -18,8 +18,14 @@ const contactSchema = new Schema(
     favorite: {
       type: Boolean,
       default: false,
+    },
+     owner: {
+      type: Schema.Types.ObjectId,
+      ref: "user",
+      require: true,
     }
-  }
+  },
+  { versionKey: false, timestamps: true }
 );
 
 contactSchema.post("save", handleSchemaValidationErrors);
