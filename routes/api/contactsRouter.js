@@ -14,22 +14,18 @@ const {
 const validationMiddleware = validation(schemas.addSchema);
 const validationMiddlewareFavorite = validation(schemas.updateFavoriteSchema);
 
-const router = express.Router();
+const contactsRouter = express.Router();
 
-router.get("/", getAll);
+contactsRouter.get("/", getAll);
 
-router.get("/:contactId", getById);
+contactsRouter.get("/:contactId", getById);
 
-router.post("/", validationMiddleware,add);
+contactsRouter.post("/", validationMiddleware,add);
 
-router.delete("/:contactId", remove);
+contactsRouter.delete("/:contactId", remove);
 
-router.put("/:contactId", validationMiddleware, update);
+contactsRouter.put("/:contactId", validationMiddleware, update);
 
-router.patch(
-  "/:contactId/favorite",
-  validationMiddlewareFavorite,
-  updateStatusContact
-);
+contactsRouter.patch( "/:contactId/favorite", validationMiddlewareFavorite, updateStatusContact );
 
-module.exports = router;
+module.exports = contactsRouter;

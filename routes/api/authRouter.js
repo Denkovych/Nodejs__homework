@@ -7,10 +7,10 @@ const { joiRegisterSchema, joiLoginSchema } = require("../../models/users");
 const validationMiddleware = validation(joiRegisterSchema);
 const validationLoginMiddleware = validation(joiLoginSchema);
 
-const router = express.Router();
+const authRouter = express.Router();
 
-router.post("/register", validationMiddleware, register);
-router.post("/login", validationLoginMiddleware, login);
-router.get("/logout", auth, logout);
+authRouter.post("/register", validationMiddleware, register);
+authRouter.post("/login", validationLoginMiddleware, login);
+authRouter.get("/logout", auth, logout);
 
-module.exports = router;
+module.exports = authRouter;
