@@ -9,7 +9,7 @@ const {
   remove,
   update,
   updateStatusContact
-} = require("../../controllers");
+} = require("../../controllers/contacts");
 
 const validationMiddleware = validation(schemas.addSchema);
 const validationMiddlewareFavorite = validation(schemas.updateFavoriteSchema);

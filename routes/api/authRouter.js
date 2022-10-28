@@ -1,8 +1,8 @@
 const express = require("express");
 
 const { auth, validation } = require("../../middlewares");
-const { auth } = require("../../controllers");
-const { joiRegisterSchema, joiLoginSchema } = require("../../models/user");
+const { register, login, logout } = require("../../controllers/auth");
+const { joiRegisterSchema, joiLoginSchema } = require("../../models/users");
 
 const validationMiddleware = validation(joiRegisterSchema);
 const validationLoginMiddleware = validation(joiLoginSchema);
