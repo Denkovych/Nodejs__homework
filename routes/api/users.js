@@ -4,8 +4,8 @@ const { auth } = require("../../middlewares");
 
 const { getCurrent } = require("../../controllers");
 
-const usersRouter = express.Router();
+const router = express.Router();
 
-usersRouter.get("/current", auth, getCurrent);
+router.get("/current", auth, getCurrent);
 
-module.exports = usersRouter;
+module.exports = router;
