@@ -13,4 +13,4 @@ router.post("/register", validationMiddleware, register);
 router.post("/login", validationLoginMiddleware, login);
 router.post("/logout", auth, logout);
 
-module.exports = router;
+module.exports = router; 
