@@ -15,7 +15,7 @@ const register = async (req, res) => {
  
   newUser.setPassword(password);
 
-  newUser.save();
+  await newUser.save();
 
   res.status(201).json({
     status: "success",
