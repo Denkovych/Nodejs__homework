@@ -9,7 +9,7 @@ const {
   remove,
   update,
   updateStatusContact
-} = require("../../controllers");
+} = require("../../controllers/contacts");
 
 const validationMiddleware = validation(schemas.addSchema);
 const validationMiddlewareFavorite = validation(schemas.updateFavoriteSchema);
@@ -26,10 +26,6 @@ router.delete("/:contactId", remove);
 
 router.put("/:contactId", validationMiddleware, update);
 
-router.patch(
-  "/:contactId/favorite",
-  validationMiddlewareFavorite,
-  updateStatusContact
-);
+router.patch( "/:contactId/favorite", validationMiddlewareFavorite, updateStatusContact );
 
 module.exports = router;
