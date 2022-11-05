@@ -1,6 +1,6 @@
 const express = require("express");
 
-const {validation } = require("../../middlewares");
+const { validation } = require("../../middlewares");
 const { schemas } = require("../../models/contacts");
 const {
   getAll,
@@ -20,12 +20,12 @@ router.get("/", getAll);
 
 router.get("/:contactId", getById);
 
-router.post("/", validationMiddleware,add);
+router.post("/", validationMiddleware, add);
 
 router.delete("/:contactId", remove);
 
 router.put("/:contactId", validationMiddleware, update);
 
-router.patch( "/:contactId/favorite", validationMiddlewareFavorite, updateStatusContact );
+router.patch("/:contactId/favorite", validationMiddlewareFavorite, updateStatusContact);
 
 module.exports = router;
