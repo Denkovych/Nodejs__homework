@@ -1,11 +1,12 @@
 const express = require("express");
 
-const { auth } = require("../../middlewares");
+const { auth, upload } = require("../../middlewares");
 
-const { getCurrent } = require("../../controllers/users/getCurrent");
+const { getCurrent, updateAvatar } = require("../../controllers/users");
 
 const router = express.Router();
 
 router.get("/current", auth, getCurrent);
+router.patch("/avatars", auth, upload.single("avatar"), updateAvatar);
 
 module.exports = router;
