@@ -1,6 +1,6 @@
 const { Conflict } = require("http-errors");
 const gravatar = require("gravatar");
-const { nanoid } = require("nanoid");
+const { v4: uuidv4 } = require('uuid');;
 
 const { sendEmail } = require("../../helpers/sendEmail");
 const { User } = require("../../models/users");
@@ -14,7 +14,7 @@ const register = async (req, res) => {
   
 
   const avatarURL = gravatar.url(email);
-  const verificationToken = nanoid();
+  const verificationToken = uuidv4();
 
   const newUser = new User({ email, subscription, avatarURL, verificationToken});
 
